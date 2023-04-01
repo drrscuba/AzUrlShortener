@@ -26,6 +26,36 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
 
         public string ShortUrl { get; set; }
 
+        public bool UseOpenGraph { get; set; }
+
+        public string OpenGraphInfoPropertyRaw { get; set; }
+
+        private OpenGraphInfo _openGraphInfo { get; set; }
+
+        [IgnoreProperty]
+        public OpenGraphInfo OpenGraphInfo
+        {
+            get
+            {
+                if (_openGraphInfo == null)
+                {
+                    if (String.IsNullOrEmpty(OpenGraphInfoPropertyRaw))
+                    {
+                        _openGraphInfo = new OpenGraphInfo();
+                    }
+                    else
+                    {
+                        _openGraphInfo = JsonSerializer.Deserialize<OpenGraphInfo>(OpenGraphInfoPropertyRaw) ?? new OpenGraphInfo();
+                    }
+                }
+                return _openGraphInfo;
+            }
+            set
+            {
+                _openGraphInfo = value;
+            }
+        }
+
         public int Clicks { get; set; }
 
         public bool? IsArchived { get; set; }
@@ -61,20 +91,25 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
 
         public ShortUrlEntity(string longUrl, string endUrl)
         {
-            Initialize(longUrl, endUrl, string.Empty, null);
+            Initialize(longUrl, endUrl, string.Empty, false, null, null);
         }
 
         public ShortUrlEntity(string longUrl, string endUrl, Schedule[] schedules)
         {
-            Initialize(longUrl, endUrl, string.Empty, schedules);
+            Initialize(longUrl, endUrl, string.Empty, false, null, schedules);
         }
 
         public ShortUrlEntity(string longUrl, string endUrl, string title, Schedule[] schedules)
         {
-            Initialize(longUrl, endUrl, title, schedules);
+            Initialize(longUrl, endUrl, title, false, null, schedules);
         }
 
-        private void Initialize(string longUrl, string endUrl, string title, Schedule[] schedules)
+        public ShortUrlEntity(string longUrl, string endUrl, string title, bool useOpenGraph, OpenGraphInfo openGraphInfo, Schedule[] schedules)
+        {
+            Initialize(longUrl, endUrl, title, useOpenGraph, openGraphInfo, schedules);
+        }
+
+        private void Initialize(string longUrl, string endUrl, string title, bool useOpenGraph, OpenGraphInfo? openGraphInfo, Schedule[] schedules)
         {
             PartitionKey = endUrl.First().ToString();
             RowKey = endUrl;
@@ -82,11 +117,18 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
             Title = title;
             Clicks = 0;
             IsArchived = false;
+            UseOpenGraph = useOpenGraph;
 
-            if(schedules?.Length>0)
+            if (schedules?.Length>0)
             {
                 Schedules = schedules.ToList<Schedule>();
                 SchedulesPropertyRaw = JsonSerializer.Serialize<List<Schedule>>(Schedules);
+            }
+
+            if (openGraphInfo != null)
+            {
+                OpenGraphInfo = openGraphInfo;
+                OpenGraphInfoPropertyRaw = JsonSerializer.Serialize(OpenGraphInfo);
             }
         }
 
@@ -108,6 +150,7 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
                 return GetActiveUrl(DateTime.UtcNow);
             return Url;
         }
+
         private string GetActiveUrl(DateTime pointInTime)
         {
             var link = Url;

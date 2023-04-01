@@ -1,0 +1,40 @@
+﻿@inherits LayoutComponentBase
+@using Cloud5mins.ShortenerTools
+@using Cloud5mins.ShortenerTools.Core.Domain
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+
+<div style="background-color:lightgrey;margin: 10px 5px 5px 5px;">
+    <div>
+        <label>Open Graph</label>
+    </div>
+
+    <div>
+        <label for="edit-og-type">Open Graph Type</label>
+        <InputText id="edit-og-type" class="form-control" placeholder="The Open Graph Type" @bind-Value="openGraphInfo.Type" />
+        <ValidationMessage For="@(() => openGraphInfo.Type)" />
+    </div>
+
+</div>
+
+
+<style>
+    .accordion-control-section {
+        margin: 0 5% 0 5%;
+    }
+
+    @@media screen and (max-width: 768px) {
+        .accordion-control-section {
+            margin: 0;
+        }
+    }
+</style>
+
+
+@code {
+
+    [Parameter]
+    public OpenGraphInfo openGraphInfo { get; set; }
+
+
+}

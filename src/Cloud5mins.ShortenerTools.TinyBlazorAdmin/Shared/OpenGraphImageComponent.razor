@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+@using Cloud5mins.ShortenerTools.Core.Domain
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Inputs
+
+<div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+            <SfTextBox id="ImageUrl" Placeholder="Image URL" @bind-Value="image.Url" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public OpenGraphImage image { get; set; }
+
+}

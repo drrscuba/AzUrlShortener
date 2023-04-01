@@ -1,5 +1,6 @@
 using Cronos;
 using System;
+using System.Diagnostics.Contracts;
 
 namespace Cloud5mins.ShortenerTools.Core.Domain
 {

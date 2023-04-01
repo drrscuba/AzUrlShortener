@@ -1,0 +1,63 @@
+﻿@inherits LayoutComponentBase
+@using Cloud5mins.ShortenerTools
+@using Cloud5mins.ShortenerTools.Core.Domain
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+
+<div style="background-color:lightgrey;margin: 10px 5px 5px 5px;">
+    <div>
+        <label>Images</label><button class="btn btn-sm" type="button" @onclick="@( ( ) => AddImageUrlClick() )">+</button>
+    </div>
+
+    <SfAccordion ExpandMode="ExpandMode.Single">
+        <AccordionItems>
+            @foreach (var i in images)
+            {
+                <AccordionItem Expanded="true">
+                    <HeaderTemplate>
+                        <button class="btn btn-sm" type="button" @onclick="@( ( ) => DeleteImageUrl( i ) )">🗑️</button>
+                        @i.Url
+                    </HeaderTemplate>
+                    <ContentTemplate>
+                        <OpenGraphImageComponent image=@i></OpenGraphImageComponent>
+                    </ContentTemplate>
+                </AccordionItem>
+            }
+        </AccordionItems>
+    </SfAccordion>
+
+</div>
+
+
+<style>
+    .accordion-control-section {
+        margin: 0 5% 0 5%;
+    }
+
+    @@media screen and (max-width: 768px) {
+        .accordion-control-section {
+            margin: 0;
+        }
+    }
+</style>
+
+
+@code {
+
+    [Parameter]
+    public List<OpenGraphImage> images { get; set; }
+
+
+    private void AddImageUrlClick()
+    {
+        images.Add(new OpenGraphImage());
+        StateHasChanged();
+    }
+
+    private void DeleteImageUrl(OpenGraphImage ogImage)
+    {
+        images.Remove(ogImage);
+        StateHasChanged();
+    }
+
+}

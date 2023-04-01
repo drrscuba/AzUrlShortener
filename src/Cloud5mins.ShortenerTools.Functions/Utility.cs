@@ -15,6 +15,11 @@ namespace Cloud5mins.ShortenerTools
 {
     public static class Utility
     {
+
+        public const string ROBOTS = "robots.txt";
+        public const string ROBOT_RESPONSE = "user-agent: *\ndisallow: /";
+        public const string FAV_ICON = "favicon.ico";
+
         //reshuffled for randomisation, same unique characters just jumbled up, you can replace with your own version
         private const string ConversionCode = "FjTG0s5dgWkbLf_8etOZqMzNhmp7u6lUJoXIDiQB9-wRxCKyrPcv4En3Y21aASHV";
         private static readonly int Base = ConversionCode.Length;

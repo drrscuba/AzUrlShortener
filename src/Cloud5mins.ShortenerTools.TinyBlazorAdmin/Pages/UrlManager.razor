@@ -168,6 +168,14 @@ else
                             <ValidationMessage For="@(() => editedUrl.Url)" />
                         </div>
                         <div>
+                            <label for="edit-url">Use Open Graph</label>
+                            <InputCheckbox id="use-open-graph" @bind-Value="editedUrl.UseOpenGraph" />
+                            <ValidationMessage For="@(() => editedUrl.UseOpenGraph)" />
+                        </div>
+                        <div>
+                            <OpenGraphComponent openGraphInfo="@editedUrl.OpenGraphInfo"></OpenGraphComponent>
+                        </div>
+                        <div>
                             <SchedulesComponent schedules="@editedUrl.Schedules"></SchedulesComponent>
                         </div>
                     </EditForm>
