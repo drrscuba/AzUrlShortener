@@ -5,10 +5,10 @@ on:
     - main
 env:
   AZURE_FUNCTIONAPP_NAME: drrsat
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: Cloud5mins.ShortenerTools.Functions/published
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: src/Cloud5mins.ShortenerTools.Functions/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: Cloud5mins.ShortenerTools.Functions
+  WORKING_DIRECTORY: src/Cloud5mins.ShortenerTools.Functions
 jobs:
   build:
     runs-on: ubuntu-latest
