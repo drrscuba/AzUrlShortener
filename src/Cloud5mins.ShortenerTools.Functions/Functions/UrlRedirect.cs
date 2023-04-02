@@ -6,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Formats.Asn1;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,11 +28,13 @@ namespace Cloud5mins.ShortenerTools.Functions
     <meta charset=""utf-8"">
     <title>$title</title>
     <meta name=""og:title"" content=""$title"" >
+    <meta name=""og:description "" content=""$description"" >
+    <meta name=""og:site_name "" content=""$site_name"" >
     <meta name=""og:type"" content=""$type"" >
     <meta name=""og:url"" content=""$shortUrl"" >
     $ogImageTag
     $ogVideoTag
-    <meta http-equiv=""refresh"" content=""0;url=$redirectUrl"">
+    <!-- meta http-equiv=""refresh"" content=""0;url=$redirectUrl"" -->
     <Style>
     .center-screen {
       display: flex;
@@ -51,6 +55,13 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         private readonly ILogger _logger;
         private readonly ShortenerSettings _settings;
+
+        private readonly string[] FacebookUserAgents = new[]
+        {
+            "facebookexternalhit/",
+            "facebot",
+            "facebookcatalog"
+        };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
         {
@@ -105,7 +116,7 @@ namespace Cloud5mins.ShortenerTools.Functions
                 _logger.LogInformation("Bad Link, resorting to fallback.");
             }
 
-            if (shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
+            if (IsFacebook(req) && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
             {
                 string html = BuildOpenGraphHtml(req, redirectUrl, shortUrlEntity);
 
@@ -123,7 +134,13 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         }
 
-        private static string BuildOpenGraphHtml(HttpRequestData req, string redirectUrl, ShortUrlEntity shortUrlEntity)
+        private bool IsFacebook(HttpRequestData req)
+        {
+            return req.Headers
+                .Any(h => h.Key == "HTTP_USER_AGENT" && h.Value.Any(v => FacebookUserAgents.Any(f => v.ToLower().StartsWith(f))));
+        }
+
+        private string BuildOpenGraphHtml(HttpRequestData req, string redirectUrl, ShortUrlEntity shortUrlEntity)
         {
             var ogInfo = shortUrlEntity.OpenGraphInfo;
 
@@ -139,8 +156,12 @@ namespace Cloud5mins.ShortenerTools.Functions
                 videoTag += OpenGraphVideoTagTemplate.Replace("$videoUrl", videoInfo.Url);
             }
 
+            var sitename = string.IsNullOrWhiteSpace(ogInfo.SiteName) ? _settings.DefaultOpenGraphSiteName : ogInfo.SiteName;
+
             var html = OpenGraphDocTemplate
                 .Replace("$title", shortUrlEntity.Title)
+                .Replace("$description", ogInfo.Description)
+                .Replace("$site_name", sitename)
                 .Replace("$type", ogInfo.Type)
                 .Replace("$shortUrl", req.Url.ToString())
                 .Replace("$ogImageTag", imageTag)
