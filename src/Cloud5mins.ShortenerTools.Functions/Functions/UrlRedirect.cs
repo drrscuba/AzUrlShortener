@@ -1,4 +1,5 @@
 using Azure;
+using Azure.Core;
 using Cloud5mins.ShortenerTools.Core.Domain;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -136,12 +137,12 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         private bool IsFacebook(HttpRequestData req)
         {
-            foreach (var header in req.Headers)
-            {
-                _logger.LogInformation($"header '{header.Key}' = '{string.Join(" : ", header.Value)}'");
-            }
+            //foreach (var header in req.Headers)
+            //{
+            //    _logger.LogInformation($"header '{header.Key}' = '{string.Join(" : ", header.Value)}'");
+            //}
             return req.Headers
-                .Any(h => h.Key == "HTTP_USER_AGENT" && h.Value.Any(v => FacebookUserAgents.Any(f => v.ToLower().StartsWith(f))));
+                .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) && h.Value.Any(v => FacebookUserAgents.Any(f => v.ToLower().StartsWith(f))));
         }
 
         private string BuildOpenGraphHtml(HttpRequestData req, string redirectUrl, ShortUrlEntity shortUrlEntity)
