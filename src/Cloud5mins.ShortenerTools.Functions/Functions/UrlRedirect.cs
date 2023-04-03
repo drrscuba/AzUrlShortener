@@ -136,6 +136,10 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         private bool IsFacebook(HttpRequestData req)
         {
+            foreach (var header in req.Headers)
+            {
+                _logger.LogDebug($"header '{header.Key}' = '{string.Join(" : ", header.Value)}'");
+            }
             return req.Headers
                 .Any(h => h.Key == "HTTP_USER_AGENT" && h.Value.Any(v => FacebookUserAgents.Any(f => v.ToLower().StartsWith(f))));
         }
