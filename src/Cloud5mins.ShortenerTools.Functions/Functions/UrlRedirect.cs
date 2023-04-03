@@ -145,10 +145,13 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         private bool IsSocialShare(HttpRequestData req)
         {
-            //foreach (var header in req.Headers)
-            //{
-            //    _logger.LogInformation($"header '{header.Key}' = '{string.Join(" : ", header.Value)}'");
-            //}
+            var userAgents = req.Headers.Where(h => h.Key.Equals(HttpHeader.Names.UserAgent));
+
+            foreach (var agent in userAgents)
+            {
+                _logger.LogInformation($"{agent.Key} = '{string.Join(",", agent.Value)}'");
+            }
+
             return req.Headers
                 .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) && h.Value.Any(v => SocialMediaBotUserAgents.Any(f => v.ToLower().StartsWith(f))));
         }
