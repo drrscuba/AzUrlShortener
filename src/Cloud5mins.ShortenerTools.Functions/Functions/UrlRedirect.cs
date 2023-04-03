@@ -68,8 +68,8 @@ namespace Cloud5mins.ShortenerTools.Functions
             "facebookexternalhit/",
             "facebot",
             "facebookcatalog",
-            "LinkedInBot",
-            "TwitterBot"
+            "linkedinbot",
+            "twitterbot"
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
