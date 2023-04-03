@@ -29,8 +29,8 @@ namespace Cloud5mins.ShortenerTools.Functions
     <meta charset=""utf-8"">
     <title>$title</title>
     <meta property=""og:title"" content=""$title"" >
-    <meta property=""og:description "" content=""$description"" >
-    <meta property=""og:site_name "" content=""$site_name"" >
+    <meta property=""og:description"" content=""$description"" >
+    <meta property=""og:site_name"" content=""$site_name"" >
     <meta property=""og:type"" content=""$type"" >
     <meta property=""og:url"" content=""$shortUrl"" >
     $ogImageTag
