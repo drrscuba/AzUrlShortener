@@ -28,11 +28,11 @@ namespace Cloud5mins.ShortenerTools.Functions
 <head>
     <meta charset=""utf-8"">
     <title>$title</title>
-    <meta name=""og:title"" content=""$title"" >
-    <meta name=""og:description "" content=""$description"" >
-    <meta name=""og:site_name "" content=""$site_name"" >
-    <meta name=""og:type"" content=""$type"" >
-    <meta name=""og:url"" content=""$shortUrl"" >
+    <meta property=""og:title"" content=""$title"" >
+    <meta property=""og:description "" content=""$description"" >
+    <meta property=""og:site_name "" content=""$site_name"" >
+    <meta property=""og:type"" content=""$type"" >
+    <meta property=""og:url"" content=""$shortUrl"" >
     $ogImageTag
     $ogVideoTag
     <!-- meta http-equiv=""refresh"" content=""0;url=$redirectUrl"" -->
@@ -53,6 +53,12 @@ namespace Cloud5mins.ShortenerTools.Functions
 </body>
 </html>
 ";
+
+        /*
+        $FirstImageTag
+        <h1>$title</h1>
+        <p>$description</p>
+        */
 
         private readonly ILogger _logger;
         private readonly ShortenerSettings _settings;
@@ -155,6 +161,9 @@ namespace Cloud5mins.ShortenerTools.Functions
                 imageTag += OpenGraphImageTagTemplate.Replace("$imageUrl", imageInfo.Url);
             }
 
+            var firstImage = ogInfo.Images.FirstOrDefault();
+            var firstImageTag = firstImage == null ? string.Empty : $"<img src=\"{firstImage.Url}\" />";
+
             var videoTag = string.Empty;
             foreach (var videoInfo in ogInfo.Videos)
             {
@@ -170,6 +179,7 @@ namespace Cloud5mins.ShortenerTools.Functions
                 .Replace("$type", ogInfo.Type)
                 .Replace("$shortUrl", req.Url.ToString())
                 .Replace("$ogImageTag", imageTag)
+                .Replace("$FirstImageTag", firstImageTag)
                 .Replace("$ogVideoTag", videoTag)
                 .Replace("$redirectUrl", redirectUrl)
                 ;
