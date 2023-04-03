@@ -63,11 +63,13 @@ namespace Cloud5mins.ShortenerTools.Functions
         private readonly ILogger _logger;
         private readonly ShortenerSettings _settings;
 
-        private readonly string[] FacebookUserAgents = new[]
+        private readonly string[] SocialMediaBotUserAgents = new[]
         {
             "facebookexternalhit/",
             "facebot",
-            "facebookcatalog"
+            "facebookcatalog",
+            "LinkedInBot",
+            "TwitterBot"
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
@@ -123,7 +125,7 @@ namespace Cloud5mins.ShortenerTools.Functions
                 _logger.LogInformation("Bad Link, resorting to fallback.");
             }
 
-            if (IsFacebook(req) && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
+            if (IsSocialShare(req) && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
             {
                 string html = BuildOpenGraphHtml(req, redirectUrl, shortUrlEntity);
 
@@ -141,14 +143,14 @@ namespace Cloud5mins.ShortenerTools.Functions
 
         }
 
-        private bool IsFacebook(HttpRequestData req)
+        private bool IsSocialShare(HttpRequestData req)
         {
             //foreach (var header in req.Headers)
             //{
             //    _logger.LogInformation($"header '{header.Key}' = '{string.Join(" : ", header.Value)}'");
             //}
             return req.Headers
-                .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) && h.Value.Any(v => FacebookUserAgents.Any(f => v.ToLower().StartsWith(f))));
+                .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) && h.Value.Any(v => SocialMediaBotUserAgents.Any(f => v.ToLower().StartsWith(f))));
         }
 
         private string BuildOpenGraphHtml(HttpRequestData req, string redirectUrl, ShortUrlEntity shortUrlEntity)
