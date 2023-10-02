@@ -132,6 +132,8 @@ namespace Cloud5mins.ShortenerTools.Functions
 
             if (IsSocialShare(req) && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
             {
+                _logger.LogInformation("Serving OpenGraph content");
+                
                 string html = BuildOpenGraphHtml(req, redirectUrl, shortUrlEntity);
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
