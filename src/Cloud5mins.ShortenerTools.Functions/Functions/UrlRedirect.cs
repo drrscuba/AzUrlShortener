@@ -74,7 +74,7 @@ namespace Cloud5mins.ShortenerTools.Functions
         };
         private readonly string[] SocialMediaBotUserAgentContains = new[]
         {
-            "Bluesky Cardyb/"
+            "bluesky cardyb/"
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
