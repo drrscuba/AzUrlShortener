@@ -63,13 +63,18 @@ namespace Cloud5mins.ShortenerTools.Functions
         private readonly ILogger _logger;
         private readonly ShortenerSettings _settings;
 
-        private readonly string[] SocialMediaBotUserAgents = new[]
+        private readonly string[] SocialMediaBotUserAgentStarts = new[]
         {
             "facebookexternalhit/",
             "facebot",
             "facebookcatalog",
             "linkedinbot",
-            "twitterbot"
+            "twitterbot",
+            "slackbot-linkexpanding"
+        };
+        private readonly string[] SocialMediaBotUserAgentContains = new[]
+        {
+            "Bluesky Cardyb/"
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
@@ -153,7 +158,11 @@ namespace Cloud5mins.ShortenerTools.Functions
             }
 
             return req.Headers
-                .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) && h.Value.Any(v => SocialMediaBotUserAgents.Any(f => v.ToLower().StartsWith(f))));
+                .Any(h => h.Key.Equals(HttpHeader.Names.UserAgent) 
+                    && h.Value.Any(v => 
+                    SocialMediaBotUserAgentStarts.Any(f => v.ToLower().StartsWith(f))
+                    || SocialMediaBotUserAgentContains.Any(f => v.ToLower().Contains(f))
+                    ));
         }
 
         private string BuildOpenGraphHtml(HttpRequestData req, string redirectUrl, ShortUrlEntity shortUrlEntity)
@@ -206,7 +215,7 @@ namespace Cloud5mins.ShortenerTools.Functions
             {
                 scriptPath = Path.Combine(
                     Environment.GetEnvironmentVariable("HOME", EnvironmentVariableTarget.Process),
-                    @"site\wwwroot\www");
+                    @"site/wwwroot/www");
             }
 
             var filePath = Path.GetFullPath(Path.Combine(scriptPath, path));
