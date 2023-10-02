@@ -89,7 +89,7 @@ namespace Cloud5mins.ShortenerTools.Functions
             HttpRequestData req,
             string shortUrl,
             ExecutionContext context)
-        {
+        {            
             string redirectUrl = _settings.DefaultRedirectUrl ?? "https://azure.com";
 
             if (shortUrl == Utility.ROBOTS)
@@ -108,6 +108,7 @@ namespace Cloud5mins.ShortenerTools.Functions
             }
 
             var shortUrlEntity = default(ShortUrlEntity);
+            var isSocialShare = IsSocialShare(req);
 
             if (!string.IsNullOrWhiteSpace(shortUrl))
             {
@@ -119,9 +120,12 @@ namespace Cloud5mins.ShortenerTools.Functions
                 if (shortUrlEntity != null)
                 {
                     _logger.LogInformation($"Found it: {shortUrlEntity.Url}");
-                    shortUrlEntity.Clicks++;
-                    await stgHelper.SaveClickStatsEntity(new ClickStatsEntity(shortUrlEntity.RowKey));
-                    await stgHelper.SaveShortUrlEntity(shortUrlEntity);
+                    if (!isSocialShare)
+                    {
+                        shortUrlEntity.Clicks++;
+                        await stgHelper.SaveClickStatsEntity(new ClickStatsEntity(shortUrlEntity.RowKey, req.Url.Query));
+                        await stgHelper.SaveShortUrlEntity(shortUrlEntity);
+                    }
                     redirectUrl = WebUtility.UrlDecode(shortUrlEntity.ActiveUrl);
                 }
             }
@@ -130,7 +134,7 @@ namespace Cloud5mins.ShortenerTools.Functions
                 _logger.LogInformation("Bad Link, resorting to fallback.");
             }
 
-            if (IsSocialShare(req) && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
+            if (isSocialShare && shortUrlEntity is { UseOpenGraph: true, OpenGraphInfo: not null }) //  ?.UseOpenGraph == true && shortUrlEntity?.OpenGraphInfo != null)                
             {
                 _logger.LogInformation("Serving OpenGraph content");
                 
