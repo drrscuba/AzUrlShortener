@@ -229,7 +229,7 @@ namespace Cloud5mins.ShortenerTools.Functions
             log.LogInformation($"Attempting to retrieve file at path {filePath}.");
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", mediaType);
-            var stream = new FileStream(filePath, FileMode.Open);
+            var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             response.Body = stream; 
             return response;
         }
