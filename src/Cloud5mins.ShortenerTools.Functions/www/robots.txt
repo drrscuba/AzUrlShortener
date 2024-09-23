@@ -1,0 +1,20 @@
+User-agent: Twitterbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: linkedinbot
+Allow: /
+
+User-agent: discordbot
+Allow: /
+
+user-agent: *
+disallow: /

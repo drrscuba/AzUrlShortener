@@ -17,7 +17,6 @@ namespace Cloud5mins.ShortenerTools
     {
 
         public const string ROBOTS = "robots.txt";
-        public const string ROBOT_RESPONSE = "user-agent: *\ndisallow: /";
         public const string FAV_ICON = "favicon.ico";
 
         //reshuffled for randomisation, same unique characters just jumbled up, you can replace with your own version

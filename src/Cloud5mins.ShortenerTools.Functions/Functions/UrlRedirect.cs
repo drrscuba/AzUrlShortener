@@ -72,9 +72,12 @@ namespace Cloud5mins.ShortenerTools.Functions
             "twitterbot",
             "slackbot-linkexpanding"
         };
+        
         private readonly string[] SocialMediaBotUserAgentContains = new[]
         {
-            "bluesky cardyb/"
+            "facebookbot/",
+            "bluesky cardyb/",
+            "discordbot/",
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
@@ -95,11 +98,12 @@ namespace Cloud5mins.ShortenerTools.Functions
             if (shortUrl == Utility.ROBOTS)
             {
                 _logger.LogInformation("Request for robots.txt.");
-
-                var response = req.CreateResponse(HttpStatusCode.OK);
-                response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-                response.WriteString(Utility.ROBOT_RESPONSE);
-                return response;
+                return StreamRobotsTxt(req, _logger);
+                
+                // var response = req.CreateResponse(HttpStatusCode.OK);
+                // response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                // response.WriteString(Utility.ROBOT_RESPONSE);
+                // return response;
             }
             else if (shortUrl == Utility.FAV_ICON)
             {
@@ -210,6 +214,14 @@ namespace Cloud5mins.ShortenerTools.Functions
         {
             const string path = "favicon.ico";
             const string mediaType = "image/vnd.microsoft.icon";
+
+            return StreamWwwContent(req, log, path, mediaType);
+        }
+
+        private static HttpResponseData StreamRobotsTxt(HttpRequestData req, ILogger log)
+        {
+            const string path = "robots.txt";
+            const string mediaType = "text/plain";
 
             return StreamWwwContent(req, log, path, mediaType);
         }
