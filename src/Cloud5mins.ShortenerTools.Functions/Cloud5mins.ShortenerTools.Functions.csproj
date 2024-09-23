@@ -25,10 +25,10 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<None Remove="www\favicon.ico" />
+		<None Remove="www\*" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="www\favicon.ico">
+		<Content Include="www\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
