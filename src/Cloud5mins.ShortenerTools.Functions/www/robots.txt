@@ -16,5 +16,11 @@ Allow: /
 User-agent: discordbot
 Allow: /
 
+User-agent: socialPilot
+Allow: /
+
+User-agent: opengraph.io
+Allow: /
+
 user-agent: *
 disallow: /

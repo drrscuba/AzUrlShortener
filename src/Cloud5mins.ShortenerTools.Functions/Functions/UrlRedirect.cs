@@ -78,6 +78,7 @@ namespace Cloud5mins.ShortenerTools.Functions
             "facebookbot/",
             "bluesky cardyb/",
             "discordbot/",
+            "opengraph.io/"
         };
 
         public UrlRedirect(ILoggerFactory loggerFactory, ShortenerSettings settings)
